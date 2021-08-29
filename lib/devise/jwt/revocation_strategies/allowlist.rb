@@ -23,7 +23,7 @@ module Devise
         extend ActiveSupport::Concern
 
         included do
-          has_many :allowlisted_jwts, dependent: :destroy
+          has_many :user_jwts, dependent: :destroy
 
           # @see Warden::JWTAuth::Interfaces::RevocationStrategy#jwt_revoked?
           def self.jwt_revoked?(payload, user)
@@ -39,7 +39,7 @@ module Devise
 
         # Warden::JWTAuth::Interfaces::User#on_jwt_dispatch
         def on_jwt_dispatch(_token, payload)
-          allowlisted_jwts.create!(
+          user_jwts.create!(
             jti: payload['jti'],
             aud: payload['aud'],
             exp: Time.at(payload['exp'].to_i)
